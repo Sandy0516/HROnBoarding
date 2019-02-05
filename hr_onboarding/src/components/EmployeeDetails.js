@@ -1,16 +1,6 @@
 import React, { Component } from "react";
 import "antd/dist/antd.css";
-import {
-  Modal,
-  Form,
-  Tooltip,
-  Button,
-  Input,
-  Icon,
-  Cascader,
-  Tabs,
-  Select
-} from "antd";
+import { Form, Button, Input, Tabs, Select } from "antd";
 
 const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
@@ -28,18 +18,15 @@ const formItemLayout = {
   }
 };
 
-const tabItems = [
-  "Personal Details",
-  "Experience Details",
-  "Passport/Visa Details",
-  "Inxurance Details"
-];
-
 class EmployeeDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTabIndex: "1"
+      selectedTabIndex: "1",
+      personal_Details: [],
+      experience_Details: [],
+      passportVisa_Details: [],
+      insurance_Details: []
     };
     this.callback = this.callback.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -56,14 +43,34 @@ class EmployeeDetails extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log("Received values of form: ", values);
-
-        this.postAdmin(values);
+        if (this.state.selectedTabIndex === "1") {
+          this.setState({ personal_Details: values });
+        } else if (this.state.selectedTabIndex === "2") {
+          this.setState({ experience_Details: values });
+        } else if (this.state.selectedTabIndex === "3") {
+          this.setState({ passportVisa_Details: values });
+        } else if (this.state.selectedTabIndex === "4") {
+          this.setState({ insurance_Details: values });
+        }
       }
     });
   }
 
   handleChange(value) {
     console.log(`selected ${value}`);
+  }
+  
+  handleSaveSubmit = () => {
+    console.log('this is:', this);
+    let { personal_Details, experience_Details, insurance_Details, passportVisa_Details } = this.state;
+    const theData = {
+        personal_Details,
+        experience_Details,
+        insurance_Details,
+        passportVisa_Details
+    }
+     console.log(theData, "theData");   
+    
   }
 
   personalDetails() {
@@ -78,8 +85,10 @@ class EmployeeDetails extends React.Component {
                 message: "Please enter your FirstName!",
                 whitespace: true
               }
-            ]
-          })(<Input />)}
+            ],
+
+            initialValue: this.state.personal_Details.FirstName
+          })(<Input type="text" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Last Name</span>}>
@@ -90,7 +99,8 @@ class EmployeeDetails extends React.Component {
                 message: "Please enter your LastName!",
                 whitespace: true
               }
-            ]
+            ],
+            initialValue: this.state.personal_Details.LastName
           })(<Input />)}
         </FormItem>
 
@@ -102,15 +112,15 @@ class EmployeeDetails extends React.Component {
                 message: "Please input your DOB!",
                 whitespace: true
               }
-            ]
-          })(<Input type="date"/>)}
+            ],
+            initialValue: this.state.personal_Details.DOB
+          })(<Input type="date" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="Gender">
           {getFieldDecorator("Gender", {
-            rules: [
-              { required: true, message: "Please enter your Gender!" }
-            ]
+            rules: [{ required: true, message: "Please enter your Gender!" }],
+            initialValue: this.state.personal_Details.Gender
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="male">Male</Option>
@@ -124,7 +134,8 @@ class EmployeeDetails extends React.Component {
           {getFieldDecorator("ContactNumber", {
             rules: [
               { required: true, message: "Please enter your Contact Number!" }
-            ]
+            ],
+            initialValue: this.state.personal_Details.ContactNumber
           })(<Input style={{ width: "100%" }} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Alternate Contact Number">
@@ -134,12 +145,14 @@ class EmployeeDetails extends React.Component {
                 required: true,
                 message: "Please enter your Alternate Contact Number!"
               }
-            ]
+            ],
+            initialValue: this.state.personal_Details.AlternateContactNumber
           })(<Input style={{ width: "100%" }} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Address">
           {getFieldDecorator("Address", {
-            rules: [{ required: true, message: "Please enter your Address!" }]
+            rules: [{ required: true, message: "Please enter your Address!" }],
+            initialValue: this.state.personal_Details.Address
           })(
             <TextArea
               placeholder="Address"
@@ -155,7 +168,8 @@ class EmployeeDetails extends React.Component {
                 required: true,
                 message: "Please enter your Permanent Address!"
               }
-            ]
+            ],
+            initialValue: this.state.personal_Details.PermanentAddress
           })(
             <TextArea
               placeholder="Permanent Address"
@@ -168,7 +182,8 @@ class EmployeeDetails extends React.Component {
           {getFieldDecorator("MaritalStatus", {
             rules: [
               { required: true, message: "Please enter your Marital Status!" }
-            ]
+            ],
+            initialValue: this.state.personal_Details.MaritalStatus
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="single">Single</Option>
@@ -182,12 +197,19 @@ class EmployeeDetails extends React.Component {
           {getFieldDecorator("BloodGroup", {
             rules: [
               { required: true, message: "Please enter your Blood Group!" }
-            ]
+            ],
+            initialValue: this.state.personal_Details.BloodGroup
           })(<Input style={{ width: "100%" }} />)}
         </FormItem>
         <FormItem>
           <Button type="primary" htmlType="submit">
             Save
+          </Button>
+        </FormItem>
+
+        <FormItem>
+          <Button type="primary" htmlType="submit">
+            Upload
           </Button>
         </FormItem>
       </Form>
@@ -198,50 +220,58 @@ class EmployeeDetails extends React.Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSubmit}>
-        <FormItem {...formItemLayout} label={<span>Total Years of Experience</span>}>
-          {getFieldDecorator("Total Years of Experience", {
+        <FormItem
+          {...formItemLayout}
+          label={<span>Total Years of Experience</span>}
+        >
+          {getFieldDecorator("TotalYearsOfExperience", {
             rules: [
               {
                 required: true,
                 message: "Please enter your Total Years of Experience!",
                 whitespace: true
               }
-            ]
+            ],
+            initialValue: this.state.experience_Details.TotalYearsOfExperience
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} label = {<span>Graduation</span>}>
-          {getFieldDecorator("Graduation",{
-              rules:[
-                  {
-                      required: true,
-                      message: "Please enter your Graduation!",
-                      whitespace: true
-                  }
-              ]
-          })(<Input></Input>)}
-        </FormItem>
-       
-        <FormItem {...formItemLayout} label={ <span>Specialization</span>}>
-        {getFieldDecorator("Specialization", {
+        <FormItem {...formItemLayout} label={<span>Graduation</span>}>
+          {getFieldDecorator("Graduation", {
             rules: [
-                {
-                    required: true,
-                    message: "Please enter your Specialization!",
-                    whitespace: true
-                }            
-            ]
-        })(<Input></Input>)}
+              {
+                required: true,
+                message: "Please enter your Graduation!",
+                whitespace: true
+              }
+            ],
+            initialValue: this.state.experience_Details.Graduation
+          })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} label={ <span>Post Graduation</span>}>
-        {getFieldDecorator("Post Graduation", {
+
+        <FormItem {...formItemLayout} label={<span>Specialization</span>}>
+          {getFieldDecorator("Specialization", {
+            rules: [
+              {
+                required: true,
+                message: "Please enter your Specialization!",
+                whitespace: true
+              }
+            ],
+            initialValue: this.state.experience_Details.Specialization
+          })(<Input />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label={<span>Post Graduation</span>}>
+          {getFieldDecorator("PostGraduation", {
             // rules: [
             //     {
             //         required: true,
             //         message: "Please enter your Post Graduation!",
             //         whitespace: true
-            //     }            
+            //     }
             // ]
-        })(<Input></Input>)}
+
+            initialValue: this.state.experience_Details.PostGraduation
+          })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="Skills">
@@ -251,7 +281,8 @@ class EmployeeDetails extends React.Component {
                 required: true,
                 message: "Please enter your Skills!"
               }
-            ]
+            ],
+            initialValue: this.state.experience_Details.Skills
           })(
             <TextArea
               placeholder="Skills"
@@ -262,9 +293,9 @@ class EmployeeDetails extends React.Component {
         </FormItem>
 
         <FormItem>
-            <Button type="primary" htmlType="submit">
-                Save
-            </Button>
+          <Button type="primary" htmlType="submit">
+            Save
+          </Button>
         </FormItem>
       </Form>
     );
@@ -275,49 +306,53 @@ class EmployeeDetails extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <FormItem {...formItemLayout} label={<span>Passport Number</span>}>
-          {getFieldDecorator("Passport Number", {
+          {getFieldDecorator("PassportNumber", {
             rules: [
               {
                 required: true,
                 message: "Please enter your Passport Number!",
                 whitespace: true
               }
-            ]
+            ],
+            initialValue: this.state.passportVisa_Details.PassportNumber
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Issue Date</span>}>
-          {getFieldDecorator("Issue Date", {
+          {getFieldDecorator("IssueDate", {
             rules: [
               {
                 required: true,
                 message: "Please input Issue Date!",
                 whitespace: true
               }
-            ]
-          })(<Input type="date"/>)}
+            ],
+            initialValue: this.state.passportVisa_Details.IssueDate
+          })(<Input type="date" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Expiry Date</span>}>
-          {getFieldDecorator("Expiry Date", {
+          {getFieldDecorator("ExpiryDate", {
             rules: [
               {
                 required: true,
                 message: "Please input Expiry Date!",
                 whitespace: true
               }
-            ]
-          })(<Input type="date"/>)}
+            ],
+            initialValue: this.state.passportVisa_Details.ExpiryDate
+          })(<Input type="date" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="Place of Issue">
-          {getFieldDecorator("Place of Issue", {
+          {getFieldDecorator("PlaceOfIssue", {
             rules: [
               { required: true, message: "Please enter Place of Issue!" }
-            ]
+            ],
+            initialValue: this.state.passportVisa_Details.PlaceOfIssue
           })(<Input />)}
         </FormItem>
-        
+
         {/* <FormItem {...formItemLayout} label="Address">
           {getFieldDecorator("Address", {
             rules: [{ required: true, message: "Please enter your Address!" }]
@@ -329,16 +364,17 @@ class EmployeeDetails extends React.Component {
             />
           )}
         </FormItem> */}
-        
+
         <FormItem {...formItemLayout} label={<span>PAN Number</span>}>
-          {getFieldDecorator("PAN Number", {
+          {getFieldDecorator("PANNumber", {
             rules: [
               {
                 required: true,
                 message: "Please enter your PAN Number!",
                 whitespace: true
               }
-            ]
+            ],
+            initialValue: this.state.passportVisa_Details.PANNumber
           })(<Input />)}
         </FormItem>
 
@@ -346,7 +382,8 @@ class EmployeeDetails extends React.Component {
           {getFieldDecorator("VISA", {
             rules: [
               { required: true, message: "If you have VISA, please select Yes" }
-            ]
+            ],
+            initialValue: this.state.passportVisa_Details.VISA
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="yes">Yes</Option>
@@ -354,7 +391,7 @@ class EmployeeDetails extends React.Component {
             </Select>
           )}
         </FormItem>
-        
+
         <FormItem>
           <Button type="primary" htmlType="submit">
             Save
@@ -366,21 +403,22 @@ class EmployeeDetails extends React.Component {
 
   insuranceDetails() {
     const { getFieldDecorator } = this.props.form;
-    return(
-        <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<span>Name of Dependent</span>}>
-          {getFieldDecorator("Name of Dependent", {
+    return (
+      <Form onSubmit={this.handleSubmit}>
+        <FormItem {...formItemLayout} label={<span>Name of Dependent</span>}>
+          {getFieldDecorator("NameOfDependent", {
             // rules: [
             //   {
             //     required: true,
             //     message: "Please enter your Name of Dependent!",
             //     whitespace: true
             //   }
-            // ]
+            // ],
+            initialValue: this.state.insurance_Details.NameOfDependent
           })(<Input />)}
-          </FormItem>
+        </FormItem>
 
-          <FormItem {...formItemLayout} label={<span>Relation</span>}>
+        <FormItem {...formItemLayout} label={<span>Relation</span>}>
           {getFieldDecorator("Relation", {
             // rules: [
             //   {
@@ -388,15 +426,17 @@ class EmployeeDetails extends React.Component {
             //     message: "Please enter Relation!",
             //     whitespace: true
             //   }
-            // ]
+            // ],
+            initialValue: this.state.insurance_Details.Relation
           })(<Input />)}
-          </FormItem>
+        </FormItem>
 
-          <FormItem {...formItemLayout} label="Gender">
+        <FormItem {...formItemLayout} label="Gender">
           {getFieldDecorator("Gender", {
             // rules: [
             //   { required: true, message: "Please enter dependent Gender!" }
-            // ]
+            // ],
+            initialValue: this.state.insurance_Details.Gender
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="male">Male</Option>
@@ -406,7 +446,6 @@ class EmployeeDetails extends React.Component {
           )}
         </FormItem>
 
-
         <FormItem {...formItemLayout} label={<span>DOB</span>}>
           {getFieldDecorator("DOBDependent", {
             // rules: [
@@ -415,17 +454,22 @@ class EmployeeDetails extends React.Component {
             //     message: "Please input DOB!",
             //     whitespace: true
             //   }
-            // ]
-          })(<Input type="date"/>)}
+            // ],
+            initialValue: this.state.insurance_Details.DOBDependent
+          })(<Input type="date" />)}
         </FormItem>
 
         <FormItem>
-            <Button type="primary" htmlType="submit">
-                Save
-            </Button>
+          <Button type="primary" htmlType="submit">
+            Save
+          </Button>
         </FormItem>
-
-        </Form>
+        <FormItem>
+          <Button type="primary" onClick={this.handleSaveSubmit}>
+            Submit
+          </Button>
+        </FormItem>
+      </Form>
     );
   }
 
