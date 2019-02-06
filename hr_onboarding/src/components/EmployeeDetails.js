@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "antd/dist/antd.css";
 import { Form, Button, Input, Tabs, Select } from "antd";
+import axios from 'axios';
 
 const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
@@ -68,8 +69,33 @@ class EmployeeDetails extends React.Component {
         experience_Details,
         insurance_Details,
         passportVisa_Details
-    }
+    } 
+    
      console.log(theData, "theData");   
+
+     var config = { headers: {'Access-Control-Allow-Origin': '*'}, proxy: { host: '192.168.169.165', port: 3001 } }
+
+    
+     axios.post('http://192.168.169.165:9096/employee/create', theData, config)
+  .then(function(response){
+    console.log('saved successfully')
+  });  
+
+    //   function HeaderPostAction() {
+    //       // Send a POST request 
+    //       console.log("Inside in HeaderPostAction")
+    //       axios({
+    //           method: 'post',
+    //           url: 'http://192.168.169.165:9096/employee/create',
+    //           data: theData,
+    //           mode: 'CORS',
+    //           headers: { "Content-Type": "application/json", "Cache-Control": "no-cache", "Postman-Token": "42e6c291-9a09-c29f-f28f-11872e2490a5" }
+    //       }).then(function (response) {
+    //           console.log("Heade With Authentication :" + response);
+    //       }).catch(function (error) {
+    //           console.log("Post Error : " + error);
+    //       });
+    //   }
     
   }
 
@@ -78,7 +104,7 @@ class EmployeeDetails extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <FormItem {...formItemLayout} label={<span>First Name</span>}>
-          {getFieldDecorator("FirstName", {
+          {getFieldDecorator("firstName", {
             rules: [
               {
                 required: true,
@@ -87,12 +113,12 @@ class EmployeeDetails extends React.Component {
               }
             ],
 
-            initialValue: this.state.personal_Details.FirstName
+            initialValue: this.state.personal_Details.firstName
           })(<Input type="text" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Last Name</span>}>
-          {getFieldDecorator("LastName", {
+          {getFieldDecorator("lastName", {
             rules: [
               {
                 required: true,
@@ -100,12 +126,12 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.personal_Details.LastName
+            initialValue: this.state.personal_Details.lastName
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>DOB</span>}>
-          {getFieldDecorator("DOB", {
+          {getFieldDecorator("dob", {
             rules: [
               {
                 required: true,
@@ -113,14 +139,14 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.personal_Details.DOB
+            initialValue: this.state.personal_Details.dob
           })(<Input type="date" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="Gender">
-          {getFieldDecorator("Gender", {
+          {getFieldDecorator("gender", {
             rules: [{ required: true, message: "Please enter your Gender!" }],
-            initialValue: this.state.personal_Details.Gender
+            initialValue: this.state.personal_Details.gender
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="male">Male</Option>
@@ -131,28 +157,28 @@ class EmployeeDetails extends React.Component {
         </FormItem>
 
         <FormItem {...formItemLayout} label="Contact Number">
-          {getFieldDecorator("ContactNumber", {
+          {getFieldDecorator("contactNumber", {
             rules: [
               { required: true, message: "Please enter your Contact Number!" }
             ],
-            initialValue: this.state.personal_Details.ContactNumber
+            initialValue: this.state.personal_Details.contactNumber
           })(<Input style={{ width: "100%" }} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Alternate Contact Number">
-          {getFieldDecorator("AlternateContactNumber", {
+          {getFieldDecorator("alternateContactNumber", {
             rules: [
               {
                 required: true,
                 message: "Please enter your Alternate Contact Number!"
               }
             ],
-            initialValue: this.state.personal_Details.AlternateContactNumber
+            initialValue: this.state.personal_Details.alternateContactNumber
           })(<Input style={{ width: "100%" }} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Address">
-          {getFieldDecorator("Address", {
+          {getFieldDecorator("address", {
             rules: [{ required: true, message: "Please enter your Address!" }],
-            initialValue: this.state.personal_Details.Address
+            initialValue: this.state.personal_Details.address
           })(
             <TextArea
               placeholder="Address"
@@ -162,14 +188,14 @@ class EmployeeDetails extends React.Component {
           )}
         </FormItem>
         <FormItem {...formItemLayout} label="Permanent Address">
-          {getFieldDecorator("PermanentAddress", {
+          {getFieldDecorator("permanentAddress", {
             rules: [
               {
                 required: true,
                 message: "Please enter your Permanent Address!"
               }
             ],
-            initialValue: this.state.personal_Details.PermanentAddress
+            initialValue: this.state.personal_Details.permanentAddress
           })(
             <TextArea
               placeholder="Permanent Address"
@@ -179,11 +205,11 @@ class EmployeeDetails extends React.Component {
           )}
         </FormItem>
         <FormItem {...formItemLayout} label="Marital Status">
-          {getFieldDecorator("MaritalStatus", {
+          {getFieldDecorator("maritalStatus", {
             rules: [
               { required: true, message: "Please enter your Marital Status!" }
             ],
-            initialValue: this.state.personal_Details.MaritalStatus
+            initialValue: this.state.personal_Details.maritalStatus
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="single">Single</Option>
@@ -194,11 +220,11 @@ class EmployeeDetails extends React.Component {
           )}
         </FormItem>
         <FormItem {...formItemLayout} label="Blood Group">
-          {getFieldDecorator("BloodGroup", {
+          {getFieldDecorator("bloodGroup", {
             rules: [
               { required: true, message: "Please enter your Blood Group!" }
             ],
-            initialValue: this.state.personal_Details.BloodGroup
+            initialValue: this.state.personal_Details.bloodGroup
           })(<Input style={{ width: "100%" }} />)}
         </FormItem>
         <FormItem>
@@ -224,7 +250,7 @@ class EmployeeDetails extends React.Component {
           {...formItemLayout}
           label={<span>Total Years of Experience</span>}
         >
-          {getFieldDecorator("TotalYearsOfExperience", {
+          {getFieldDecorator("totalYearsOfExperience", {
             rules: [
               {
                 required: true,
@@ -232,11 +258,11 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.experience_Details.TotalYearsOfExperience
+            initialValue: this.state.experience_Details.totalYearsOfExperience
           })(<Input />)}
         </FormItem>
         <FormItem {...formItemLayout} label={<span>Graduation</span>}>
-          {getFieldDecorator("Graduation", {
+          {getFieldDecorator("graduation", {
             rules: [
               {
                 required: true,
@@ -244,12 +270,12 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.experience_Details.Graduation
+            initialValue: this.state.experience_Details.graduation
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Specialization</span>}>
-          {getFieldDecorator("Specialization", {
+          {getFieldDecorator("specialization", {
             rules: [
               {
                 required: true,
@@ -257,11 +283,11 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.experience_Details.Specialization
+            initialValue: this.state.experience_Details.specialization
           })(<Input />)}
         </FormItem>
         <FormItem {...formItemLayout} label={<span>Post Graduation</span>}>
-          {getFieldDecorator("PostGraduation", {
+          {getFieldDecorator("postGraduation", {
             // rules: [
             //     {
             //         required: true,
@@ -270,19 +296,19 @@ class EmployeeDetails extends React.Component {
             //     }
             // ]
 
-            initialValue: this.state.experience_Details.PostGraduation
+            initialValue: this.state.experience_Details.postGraduation
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="Skills">
-          {getFieldDecorator("Skills", {
+          {getFieldDecorator("skills", {
             rules: [
               {
                 required: true,
                 message: "Please enter your Skills!"
               }
             ],
-            initialValue: this.state.experience_Details.Skills
+            initialValue: this.state.experience_Details.skills
           })(
             <TextArea
               placeholder="Skills"
@@ -306,7 +332,7 @@ class EmployeeDetails extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <FormItem {...formItemLayout} label={<span>Passport Number</span>}>
-          {getFieldDecorator("PassportNumber", {
+          {getFieldDecorator("passportNumber", {
             rules: [
               {
                 required: true,
@@ -314,12 +340,12 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.passportVisa_Details.PassportNumber
+            initialValue: this.state.passportVisa_Details.passportNumber
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Issue Date</span>}>
-          {getFieldDecorator("IssueDate", {
+          {getFieldDecorator("issueDate", {
             rules: [
               {
                 required: true,
@@ -327,12 +353,12 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.passportVisa_Details.IssueDate
+            initialValue: this.state.passportVisa_Details.issueDate
           })(<Input type="date" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Expiry Date</span>}>
-          {getFieldDecorator("ExpiryDate", {
+          {getFieldDecorator("expiryDate", {
             rules: [
               {
                 required: true,
@@ -340,16 +366,16 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.passportVisa_Details.ExpiryDate
+            initialValue: this.state.passportVisa_Details.expiryDate
           })(<Input type="date" />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="Place of Issue">
-          {getFieldDecorator("PlaceOfIssue", {
+          {getFieldDecorator("placeOfIssue", {
             rules: [
               { required: true, message: "Please enter Place of Issue!" }
             ],
-            initialValue: this.state.passportVisa_Details.PlaceOfIssue
+            initialValue: this.state.passportVisa_Details.placeOfIssue
           })(<Input />)}
         </FormItem>
 
@@ -366,7 +392,7 @@ class EmployeeDetails extends React.Component {
         </FormItem> */}
 
         <FormItem {...formItemLayout} label={<span>PAN Number</span>}>
-          {getFieldDecorator("PANNumber", {
+          {getFieldDecorator("pannumber", {
             rules: [
               {
                 required: true,
@@ -374,16 +400,16 @@ class EmployeeDetails extends React.Component {
                 whitespace: true
               }
             ],
-            initialValue: this.state.passportVisa_Details.PANNumber
+            initialValue: this.state.passportVisa_Details.pannumber
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="VISA">
-          {getFieldDecorator("VISA", {
+          {getFieldDecorator("visa", {
             rules: [
               { required: true, message: "If you have VISA, please select Yes" }
             ],
-            initialValue: this.state.passportVisa_Details.VISA
+            initialValue: this.state.passportVisa_Details.visa
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="yes">Yes</Option>
@@ -406,7 +432,7 @@ class EmployeeDetails extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <FormItem {...formItemLayout} label={<span>Name of Dependent</span>}>
-          {getFieldDecorator("NameOfDependent", {
+          {getFieldDecorator("nameOfDependent", {
             // rules: [
             //   {
             //     required: true,
@@ -414,12 +440,12 @@ class EmployeeDetails extends React.Component {
             //     whitespace: true
             //   }
             // ],
-            initialValue: this.state.insurance_Details.NameOfDependent
+            initialValue: this.state.insurance_Details.nameOfDependent
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>Relation</span>}>
-          {getFieldDecorator("Relation", {
+          {getFieldDecorator("relation", {
             // rules: [
             //   {
             //     required: true,
@@ -427,16 +453,16 @@ class EmployeeDetails extends React.Component {
             //     whitespace: true
             //   }
             // ],
-            initialValue: this.state.insurance_Details.Relation
+            initialValue: this.state.insurance_Details.relation
           })(<Input />)}
         </FormItem>
 
         <FormItem {...formItemLayout} label="Gender">
-          {getFieldDecorator("Gender", {
+          {getFieldDecorator("gender", {
             // rules: [
             //   { required: true, message: "Please enter dependent Gender!" }
             // ],
-            initialValue: this.state.insurance_Details.Gender
+            initialValue: this.state.insurance_Details.gender
           })(
             <Select style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="male">Male</Option>
@@ -447,7 +473,7 @@ class EmployeeDetails extends React.Component {
         </FormItem>
 
         <FormItem {...formItemLayout} label={<span>DOB</span>}>
-          {getFieldDecorator("DOBDependent", {
+          {getFieldDecorator("dobdependent", {
             // rules: [
             //   {
             //     required: true,
@@ -455,7 +481,7 @@ class EmployeeDetails extends React.Component {
             //     whitespace: true
             //   }
             // ],
-            initialValue: this.state.insurance_Details.DOBDependent
+            initialValue: this.state.insurance_Details.dobdependent
           })(<Input type="date" />)}
         </FormItem>
 
